@@ -6,10 +6,14 @@ export const requireAuth = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  if (req.headers.authorization) {
-    const token = req.headers.authorization;
-    const decodedToken = jwt.verify(token, process.env.YOUR_SECRET_KEY);
-    (req as any).user = decodedToken;
+  try {
+    if (req.headers.authorization) {
+      const token = req.headers.authorization;
+      const decodedToken = jwt.verify(token, process.env.YOUR_SECRET_KEY);
+      (req as any).user = decodedToken;
+    }
+    next();
+  } catch (error) {
+    res.status(401).json({ message: "Unauthorized" });
   }
-  next();
 };

@@ -15,11 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.requireAuth = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const requireAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    if (req.headers.authorization) {
-        const token = req.headers.authorization;
-        const decodedToken = jsonwebtoken_1.default.verify(token, process.env.YOUR_SECRET_KEY);
-        req.user = decodedToken;
+    try {
+        if (req.headers.authorization) {
+            const token = req.headers.authorization;
+            const decodedToken = jsonwebtoken_1.default.verify(token, process.env.YOUR_SECRET_KEY);
+            req.user = decodedToken;
+        }
+        next();
     }
-    next();
+    catch (error) {
+        res.status(401).json({ message: "Unauthorized" });
+    }
 });
 exports.requireAuth = requireAuth;
