@@ -3,10 +3,17 @@ import Category from "../models/category.model";
 
 export const ArticleResolvers = {
   Query: {
-    getListArticle: async () => {
+    getListArticle: async (
+      _: any,
+      args: { sortKey: String; sortValue: String }
+    ) => {
+      const { sortKey, sortValue } = args;
+      const sortOptions: any = {};
+      sortOptions[sortKey.toString()] = sortValue === "asc" ? 1 : -1;
+
       const articles = await Article.find({
         deleted: false,
-      });
+      }).sort(sortOptions);
       return articles;
     },
     getArticle: async (_: any, args: { id: string }) => {
