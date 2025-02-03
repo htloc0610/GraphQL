@@ -5,15 +5,36 @@ export const ArticleResolvers = {
   Query: {
     getListArticle: async (
       _: any,
-      args: { sortKey: String; sortValue: String }
+      args: {
+        sortKey: String;
+        sortValue: String;
+        filterValue: String;
+        currentPage: number;
+        limitItems: number;
+      }
     ) => {
-      const { sortKey, sortValue } = args;
+      const { sortKey, sortValue, filterValue, currentPage, limitItems } = args;
       const sortOptions: any = {};
       sortOptions[sortKey.toString()] = sortValue === "asc" ? 1 : -1;
 
-      const articles = await Article.find({
-        deleted: false,
-      }).sort(sortOptions);
+      let articles;
+      if (filterValue) {
+        articles = await Article.find({
+          deleted: false,
+          categoryID: filterValue,
+        })
+          .sort(sortOptions)
+          .skip((currentPage - 1) * limitItems)
+          .limit(limitItems);
+      } else {
+        articles = await Article.find({
+          deleted: false,
+        })
+          .sort(sortOptions)
+          .skip((currentPage - 1) * limitItems)
+          .limit(limitItems);
+      }
+
       return articles;
     },
     getArticle: async (_: any, args: { id: string }) => {
