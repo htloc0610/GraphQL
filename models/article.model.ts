@@ -6,6 +6,7 @@ interface IArticle extends Document {
   description: string;
   deleted: boolean;
   deletedAt?: Date;
+  categoryID: Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -22,6 +23,11 @@ const articleSchema = new Schema<IArticle>(
     },
     description: {
       type: String,
+      required: true,
+    },
+    categoryID: {
+      type: Schema.Types.ObjectId,
+      ref: "Category",
       required: true,
     },
     deleted: {
