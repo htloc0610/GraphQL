@@ -9,31 +9,34 @@ export const ArticleResolvers = {
         sortKey: String;
         sortValue: String;
         filterValue: String;
+        keyword: String;
         currentPage: number;
         limitItems: number;
       }
     ) => {
-      const { sortKey, sortValue, filterValue, currentPage, limitItems } = args;
+      const {
+        sortKey,
+        sortValue,
+        filterValue,
+        keyword,
+        currentPage,
+        limitItems,
+      } = args;
       const sortOptions: any = {};
       sortOptions[sortKey.toString()] = sortValue === "asc" ? 1 : -1;
 
-      let articles;
+      let query: any = { deleted: false };
       if (filterValue) {
-        articles = await Article.find({
-          deleted: false,
-          categoryID: filterValue,
-        })
-          .sort(sortOptions)
-          .skip((currentPage - 1) * limitItems)
-          .limit(limitItems);
-      } else {
-        articles = await Article.find({
-          deleted: false,
-        })
-          .sort(sortOptions)
-          .skip((currentPage - 1) * limitItems)
-          .limit(limitItems);
+        query.categoryID = filterValue;
       }
+      if (keyword) {
+        query.title = { $regex: keyword, $options: "i" };
+      }
+
+      const articles = await Article.find(query)
+        .sort(sortOptions)
+        .skip((currentPage - 1) * limitItems)
+        .limit(limitItems);
 
       return articles;
     },

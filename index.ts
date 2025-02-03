@@ -6,6 +6,7 @@ import { ApolloServer } from "apollo-server-express";
 // import { typeDefs } from "./typeDefs";
 import resolvers from "./resolvers/index.resolvers";
 import typeDefs from "./typeDefs/index.typeDefs";
+import { requireAuth } from "./middlewares/auth.middleware";
 
 const app: Express = express();
 
@@ -17,10 +18,14 @@ const startSever = async () => {
   database.connect();
 
   // GraphQL
+  app.use("/graphql", requireAuth);
 
   const apolloSever = new ApolloServer({
     typeDefs: typeDefs,
-    resolvers,
+    resolvers: resolvers,
+    context: ({ req }) => {
+      return { ...req };
+    },
   });
 
   await apolloSever.start();
