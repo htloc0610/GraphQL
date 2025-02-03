@@ -62,6 +62,7 @@ export const resolvers = {
           title: string;
           avatar: string;
           description: string;
+          categoryID: string;
         };
       }
     ) => {

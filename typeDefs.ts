@@ -29,6 +29,7 @@ export const typeDefs = gql`
     title: String
     avatar: String
     description: String
+    categoryID: ID
   }
 
   input CategoryInput {
