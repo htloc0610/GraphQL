@@ -23,6 +23,7 @@ const startSever = async () => {
   const apolloSever = new ApolloServer({
     typeDefs: typeDefs,
     resolvers: resolvers,
+    introspection: true,
     context: ({ req }) => {
       return { ...req };
     },

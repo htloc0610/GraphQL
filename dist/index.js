@@ -61,6 +61,7 @@ const startSever = () => __awaiter(void 0, void 0, void 0, function* () {
     const apolloSever = new apollo_server_express_1.ApolloServer({
         typeDefs: index_typeDefs_1.default,
         resolvers: index_resolvers_1.default,
+        introspection: true,
         context: ({ req }) => {
             return Object.assign({}, req);
         },
